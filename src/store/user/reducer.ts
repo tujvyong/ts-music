@@ -1,29 +1,47 @@
-// import * as AT from '../actions/ActionType'
 import {
-  User,
+  UserStore,
   UserActionTypes,
+  FIREBASE_USER,
+  FIREBASE_TOKEN,
   INIT_STATE,
+  UPDATE_STATE
 } from './types'
 
 const initialState = {
+  firebaseUser: null,
+  token: null,
+  uid: null,
   username: null,
-  email: null,
+  // email: null,
   photoURL: null,
+  profile: null,
+  skill: null,
   emailVerified: false,
   isLoaded: false,
 }
 
-export default function userReducer(state = initialState, action: UserActionTypes): User {
+export default function userReducer(state = initialState, action: UserActionTypes): UserStore {
   switch (action.type) {
+    case FIREBASE_USER:
+      const currentUser = action.payload
+      return { ...state, firebaseUser: currentUser }
+    case FIREBASE_TOKEN:
+      const idToken = action.payload
+      return { ...state, token: idToken }
     case INIT_STATE:
-      const { username, email, photoURL, emailVerified } = action.payload
+      const { uid, username, photoURL, profile, skill, emailVerified } = action.payload
       return {
         ...state,
-        username: username,
-        email: email,
-        photoURL: photoURL,
+        uid: uid,
+        username: username ?? '',
+        photoURL: photoURL ?? '',
+        profile: profile ?? '',
+        skill: skill ?? '',
         emailVerified: emailVerified,
       }
+    case UPDATE_STATE:
+      const { name, item } = action.payload
+      return { ...state, [name]: item }
     default:
       return state
   }

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -35,10 +36,6 @@ const Register: React.FC<Props> = () => {
         console.log(errorMessage)
       }
     })
-    if (res) {
-      console.log(res)
-      history.push("/")
-    }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -99,7 +96,6 @@ const Register: React.FC<Props> = () => {
           label=""
         />
         <Button
-          type="submit"
           fullWidth
           variant="contained"
           color="primary"
@@ -107,7 +103,7 @@ const Register: React.FC<Props> = () => {
           onClick={handleSubmit}
         >
           Register
-          </Button>
+        </Button>
         <Grid container>
           <Grid item xs>
             <Link href="#" variant="body2">

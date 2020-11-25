@@ -1,11 +1,14 @@
-import { User } from '../user/types'
+import {
+  ERROR_UI,
+  BACKDROP_UI
+} from './types'
 
-// export const handleError = (err) => ({
-//   type: AT.ERROR_UI,
-//   payload: err
-// })
+export const ErrorUi = (err: Error) => ({
+  type: ERROR_UI,
+  payload: err
+})
 
-// export const handleBackdrop = (toggle) => ({
-//   type: AT.BACKDROP_UI,
-//   payload: toggle
-// })
+export const BackdropUi = (toggle: boolean) => ({
+  type: BACKDROP_UI,
+  payload: toggle
+})
