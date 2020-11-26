@@ -10,8 +10,8 @@ import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <CssBaseline />
     <ThemeProvider theme={theme}>
+      <CssBaseline />
       <Provider store={store}>
         <App />
       </Provider>
