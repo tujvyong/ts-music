@@ -1,10 +1,11 @@
-import { yellow } from '@material-ui/core/colors';
+import { orange, indigo } from '@material-ui/core/colors';
 import { createMuiTheme } from '@material-ui/core/styles';
 
 const theme = createMuiTheme({
   palette: {
     type: 'dark',
-    primary: yellow,
+    primary: orange,
+    secondary: indigo,
   },
   breakpoints: {
     values: {
