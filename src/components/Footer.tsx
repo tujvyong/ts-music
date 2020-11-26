@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import { Button, Typography } from '@material-ui/core'
+import { RootStore } from '../store';
 import firebase from '../firebase/Firebase'
 
 interface Props {
@@ -9,6 +11,7 @@ interface Props {
 
 const Footer: React.FC<Props> = () => {
   const classes = useStyles()
+  const isAuthed = useSelector((state: RootStore) => state.user.isLoaded)
 
   const handleLogout = () => {
     firebase.auth().signOut().then((res) => {
@@ -20,11 +23,13 @@ const Footer: React.FC<Props> = () => {
 
   return (
     <Typography align="center">
-      <Button
-        onClick={handleLogout}
-      >
-        Logout
-    </Button>
+      {isAuthed ? (
+        <Button
+          onClick={handleLogout}
+        >
+          Logout
+        </Button>
+      ) : null}
     </Typography>
   )
 }

@@ -39,7 +39,6 @@ const Initial: React.FC<Props> = ({ children }) => {
       console.log(authed.data)
       dispatch(setInitialUser(authed.data.data))
       setIsLoaded(true)
-      // history.push("/")
     }
   }
 

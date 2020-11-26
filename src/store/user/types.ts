@@ -16,6 +16,7 @@ export interface UserStore {
   profile: string | null
   skill: string | null
   emailVerified: boolean
+  isLoaded: boolean
 }
 
 export interface UpdateUser {

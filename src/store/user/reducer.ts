@@ -38,6 +38,7 @@ export default function userReducer(state = initialState, action: UserActionType
         profile: profile ?? '',
         skill: skill ?? '',
         emailVerified: emailVerified,
+        isLoaded: true,
       }
     case UPDATE_STATE:
       const { name, item } = action.payload
