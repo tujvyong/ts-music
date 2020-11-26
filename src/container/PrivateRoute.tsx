@@ -8,16 +8,15 @@ interface Props {
 
 }
 
-const PrivateRoute: React.FC<RouteProps> = ({ component, ...rest }) => {
+const PrivateRoute: React.FC<RouteProps> = (props) => {
   const isAuthed = useSelector((state: RootStore) => state.user.isLoaded)
 
-  // const rest = _.omit(props, ['component'])
   return (
     <Route
-      {...rest}
+      // {...rest}
       render={({ location }) =>
         isAuthed ? (
-          component
+          <Route {...props} />
         ) : (
             <Redirect
               to={{
