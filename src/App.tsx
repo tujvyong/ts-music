@@ -6,6 +6,7 @@ import ErrorHandling from "./container/ErrorHandling"
 import Auth from "./pages/Auth";
 import Front from "./pages/Front";
 import Profile from "./pages/Profile";
+import BackDrop from './components/Backdrop';
 
 function App() {
   return (
@@ -19,6 +20,8 @@ function App() {
               <Route path="/" component={Front} />
             </Switch>
           </Layout>
+
+          <BackDrop />
         </ErrorHandling>
       </Initial>
     </Router>
