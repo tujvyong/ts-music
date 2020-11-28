@@ -9,14 +9,14 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
-  <React.StrictMode>
+  <React.Fragment>
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Provider store={store}>
         <App />
       </Provider>
     </ThemeProvider>
-  </React.StrictMode>,
+  </React.Fragment>,
   document.getElementById('root')
 );
 
