@@ -3,20 +3,20 @@ import { useDispatch, useSelector } from 'react-redux'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
 import { RootStore } from '../../store'
-import { BackdropUi } from "../../store/ui/actions";
+import { BackdropUi, ErrorUi } from "../../store/ui/actions";
 import { updateState } from '../../store/user/actions'
-import { clientAxios } from '../../utils/axios'
+import { userUpdate, APIresponce } from '../../utils/axios'
 
 interface Props {
   label: string
   itemName: string
   value: string | null
   editable: boolean
-  setEdit: React.Dispatch<React.SetStateAction<{ username: boolean; profile: boolean; skill: boolean; }>>
+  setEdit: React.Dispatch<React.SetStateAction<{ photo: boolean, username: boolean; profile: boolean; skill: boolean; }>>
   multi?: boolean
 }
 
-const ProfileItem: React.FC<Props> = ({ label, itemName, value, editable, setEdit, multi = false }) => {
+const ProfileText: React.FC<Props> = ({ label, itemName, value, editable, setEdit, multi = false }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const user = useSelector((state: RootStore) => state.user)
@@ -60,16 +60,12 @@ const ProfileItem: React.FC<Props> = ({ label, itemName, value, editable, setEdi
     const { token, uid } = user
     let srcData = tmpState.body?.trim()
     if (srcData === undefined || srcData === '') { return }
+    if (token === null || uid === null) { return }
 
     dispatch(BackdropUi(true))
-    const resp = await clientAxios.put(
-      "/user",
-      { u: uid, c: itemName, s: srcData },
-      { headers: { 'Authorization': 'Bearer ' + token }, withCredentials: true }
-    )
-    if (resp.status !== 204) {
-      console.error(resp.data.error)
-      dispatch(BackdropUi(false))
+    const res: APIresponce = await userUpdate(token, uid, itemName, srcData)
+    if (res.status !== 204) {
+      dispatch(ErrorUi(res.message))
       return
     }
     dispatch(updateState(itemName, srcData))
@@ -128,7 +124,7 @@ const ProfileItem: React.FC<Props> = ({ label, itemName, value, editable, setEdi
   )
 }
 
-export default ProfileItem
+export default ProfileText
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

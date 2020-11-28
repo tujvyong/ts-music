@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
-import { Container } from '@material-ui/core'
+import { Container, Grid, Typography, Avatar, Button } from '@material-ui/core'
 import { RootStore } from '../store'
-import ProfileItem from '../components/users/ProfileItem'
+import ProfileText from '../components/users/ProfileText'
+import ProfileImg from '../components/users/ProfileImg'
+import { ImageUpload } from '../components/users/ImageUpload'
 
 interface Props {
 
@@ -13,6 +15,7 @@ const Profile: React.FC<Props> = () => {
   const classes = useStyles()
   const user = useSelector((state: RootStore) => state.user)
   const [edit, setEdit] = useState({
+    photo: false,
     username: false,
     profile: false,
     skill: false,
@@ -20,14 +23,21 @@ const Profile: React.FC<Props> = () => {
 
   return (
     <Container>
-      <ProfileItem
+      {edit.photo ? (
+        <ImageUpload editable={edit.photo} setEdit={setEdit} />
+      ) : null}
+      <ProfileImg
+        setEdit={setEdit}
+      />
+
+      <ProfileText
         label="ユーザー名"
         itemName="username"
         value={user.username}
         editable={edit.username}
         setEdit={setEdit}
       />
-      <ProfileItem
+      <ProfileText
         label="プロフィール"
         itemName="profile"
         value={user.profile}
@@ -35,7 +45,7 @@ const Profile: React.FC<Props> = () => {
         setEdit={setEdit}
         multi
       />
-      <ProfileItem
+      <ProfileText
         label="演奏できるもの"
         itemName="skill"
         value={user.skill}
@@ -51,10 +61,6 @@ export default Profile
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    editBox: {
-      '&:hover': {
 
-      }
-    }
   })
 )
