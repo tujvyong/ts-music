@@ -34,7 +34,7 @@ export default function userReducer(state = initialState, action: UserActionType
         ...state,
         uid: uid,
         username: username ?? '',
-        photoURL: photoURL ?? '',
+        photoURL: photoURL ? process.env.REACT_APP_STORAGE_PATH as string + photoURL : '',
         profile: profile ?? '',
         skill: skill ?? '',
         emailVerified: emailVerified,
