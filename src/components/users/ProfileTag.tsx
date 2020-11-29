@@ -60,7 +60,7 @@ const ProfileTag: React.FC<Props> = ({ editable, setEdit }) => {
   const handleCancel = () => {
     let c
     if (isChanged) {
-      c = window.confirm("変更が破棄されまっせ？")
+      c = window.confirm("変更が破棄されますが、よろしいですか？")
       if (c) {
         setIsChanged(false)
       } else {

@@ -33,7 +33,7 @@ const ProfileText: React.FC<Props> = ({ label, itemName, value, editable, setEdi
   const handleCancel = () => {
     let c
     if (tmpState.isChanged) {
-      c = window.confirm("変更が破棄されまっせ？")
+      c = window.confirm("変更が破棄されますが、よろしいですか？")
       if (c) {
         setTmpState({ body: value, isChanged: false })
       } else {
