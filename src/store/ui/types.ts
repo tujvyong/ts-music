@@ -2,13 +2,13 @@ export const ERROR_UI = 'ERROR_UI'
 export const BACKDROP_UI = 'BACKDROP_UI'
 
 export interface UiStore {
-  error: Error | null
+  error: string | null
   backdrop: boolean
 }
 
 interface ErrorUi {
   type: typeof ERROR_UI,
-  payload: Error
+  payload: string
 }
 
 interface BackdropUi {

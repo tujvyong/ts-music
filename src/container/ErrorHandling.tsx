@@ -16,10 +16,10 @@ const ErrorHandling: React.FC<Props> = ({ children }) => {
   if (ui.error !== null) {
     content = (
       <Container>
-        <Typography paragraph>{ui.error.message || ui.error.name}</Typography>
-        <pre className={classes.detailStyle}>
+        <Typography paragraph>{ui.error}</Typography>
+        {/* <pre className={classes.detailStyle}>
           {ui.error.stack || "Stack trace is not available."}
-        </pre>
+        </pre> */}
       </Container>
     )
   } else {

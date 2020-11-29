@@ -3,7 +3,7 @@ import {
   BACKDROP_UI
 } from './types'
 
-export const ErrorUi = (err: Error) => ({
+export const ErrorUi = (err: string) => ({
   type: ERROR_UI,
   payload: err
 })
