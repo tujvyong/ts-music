@@ -16,6 +16,7 @@ const initialState = {
   photoURL: null,
   profile: null,
   skill: null,
+  genrus: [],
   emailVerified: false,
   isLoaded: false,
 }

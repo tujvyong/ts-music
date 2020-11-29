@@ -1,4 +1,5 @@
 import firebase from "../../firebase/Firebase";
+import { ChipData } from "../../utils/types";
 import {
   UserStore,
   INIT_STATE,
@@ -28,7 +29,7 @@ export const setInitialUser = (user: UserStore) => {
   }
 }
 
-export const updateState = (name: string, item: string) => {
+export const updateState = (name: string, item: string | ChipData[]) => {
   return {
     type: UPDATE_STATE,
     payload: { name, item }

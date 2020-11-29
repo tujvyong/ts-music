@@ -1,9 +1,10 @@
 import axios from 'axios'
-// import firebase from '../firebase/Firebase'
+import { ChipData } from './types'
 
 export interface APIresponce {
-  status: number,
-  message: Error
+  status: number
+  error?: string
+  message?: string
 }
 
 export const clientAxios = axios.create({
@@ -26,6 +27,20 @@ export const userUpdate = async (token: string, uid: string, column: string, src
   )
   if (resp.status !== 204) {
     console.error(resp.data.error)
+    return { status: resp.status, error: resp.data.error }
   }
-  return { status: resp.status, message: resp.data.error }
+  return { status: resp.status }
+}
+
+export const userUpdateGenru = async (token: string, tags: ChipData[]) => {
+  const resp = await clientAxios.post(
+    "/genru",
+    tags,
+    { headers: { 'Authorization': 'Bearer ' + token }, withCredentials: true }
+  )
+  if (resp.status !== 204) {
+    console.error(resp.data.error)
+    return { status: resp.status, error: resp.data.error }
+  }
+  return { status: resp.status }
 }

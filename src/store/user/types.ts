@@ -1,4 +1,5 @@
 import firebase from "../../firebase/Firebase";
+import { ChipData } from "../../utils/types";
 
 
 export const FIREBASE_USER = 'FIREBASE_USER'
@@ -15,6 +16,7 @@ export interface UserStore {
   photoURL: string | null
   profile: string | null
   skill: string | null
+  genrus: ChipData[]
   emailVerified: boolean
   isLoaded: boolean
 }

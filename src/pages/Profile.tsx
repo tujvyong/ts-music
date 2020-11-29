@@ -6,6 +6,8 @@ import { RootStore } from '../store'
 import ProfileText from '../components/users/ProfileText'
 import ProfileImg from '../components/users/ProfileImg'
 import { ImageUpload } from '../components/users/ImageUpload'
+import ProfileTag from '../components/users/ProfileTag'
+import { ProfileEdit } from '../utils/types'
 
 interface Props {
 
@@ -14,11 +16,12 @@ interface Props {
 const Profile: React.FC<Props> = () => {
   const classes = useStyles()
   const user = useSelector((state: RootStore) => state.user)
-  const [edit, setEdit] = useState({
+  const [edit, setEdit] = useState<ProfileEdit>({
     photo: false,
     username: false,
     profile: false,
     skill: false,
+    genrus: false,
   })
 
   return (
@@ -52,6 +55,10 @@ const Profile: React.FC<Props> = () => {
         editable={edit.skill}
         setEdit={setEdit}
         multi
+      />
+      <ProfileTag
+        editable={edit.genrus}
+        setEdit={setEdit}
       />
     </Container>
   )
