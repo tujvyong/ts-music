@@ -13,6 +13,7 @@ import { RootStore } from '../../store'
 import firebase, { storage } from "../../firebase/Firebase";
 import { updateState } from '../../store/user/actions';
 import { userUpdate, APIresponce } from '../../utils/axios'
+import { ProfileEdit } from '../../utils/types';
 
 
 interface Image {
@@ -29,7 +30,7 @@ interface State {
 
 interface Props {
   editable: boolean
-  setEdit: React.Dispatch<React.SetStateAction<{ photo: boolean, username: boolean; profile: boolean; skill: boolean; }>>
+  setEdit: React.Dispatch<React.SetStateAction<ProfileEdit>>
 }
 
 export const ImageUpload: React.FC<Props> = ({ editable, setEdit }) => {
@@ -174,7 +175,7 @@ export const ImageUpload: React.FC<Props> = ({ editable, setEdit }) => {
         console.log("success delete image")
         const res: APIresponce = await userUpdate(token, uid, 'photo_url', null)
         if (res.status !== 204) {
-          dispatch(ErrorUi(res.message))
+          dispatch(ErrorUi(res.error as string))
           return
         }
         dispatch(updateState('photoURL', ''))
@@ -222,7 +223,7 @@ export const ImageUpload: React.FC<Props> = ({ editable, setEdit }) => {
         const filePath = uploadTask.snapshot.ref.fullPath
         const res: APIresponce = await userUpdate(token, uid, 'photo_url', filePath)
         if (res.status !== 204) {
-          dispatch(ErrorUi(res.message))
+          dispatch(ErrorUi(res.error as string))
           return
         }
         dispatch(updateState('photoURL', process.env.REACT_APP_STORAGE_PATH as string + filePath))

@@ -6,13 +6,14 @@ import { RootStore } from '../../store'
 import { BackdropUi, ErrorUi } from "../../store/ui/actions";
 import { updateState } from '../../store/user/actions'
 import { userUpdate, APIresponce } from '../../utils/axios'
+import { ProfileEdit } from '../../utils/types'
 
 interface Props {
   label: string
   itemName: string
   value: string | null
   editable: boolean
-  setEdit: React.Dispatch<React.SetStateAction<{ photo: boolean, username: boolean; profile: boolean; skill: boolean; }>>
+  setEdit: React.Dispatch<React.SetStateAction<ProfileEdit>>
   multi?: boolean
 }
 
@@ -65,7 +66,7 @@ const ProfileText: React.FC<Props> = ({ label, itemName, value, editable, setEdi
     dispatch(BackdropUi(true))
     const res: APIresponce = await userUpdate(token, uid, itemName, srcData)
     if (res.status !== 204) {
-      dispatch(ErrorUi(res.message))
+      dispatch(ErrorUi(res.error as string))
       return
     }
     dispatch(updateState(itemName, srcData))

@@ -3,9 +3,10 @@ import { useSelector } from 'react-redux'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import { Button, Grid, Avatar, Typography } from '@material-ui/core'
 import { RootStore } from '../../store'
+import { ProfileEdit } from '../../utils/types'
 
 interface Props {
-  setEdit: React.Dispatch<React.SetStateAction<{ photo: boolean, username: boolean; profile: boolean; skill: boolean; }>>
+  setEdit: React.Dispatch<React.SetStateAction<ProfileEdit>>
 }
 
 const ProfileImg: React.FC<Props> = ({ setEdit }) => {
