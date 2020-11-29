@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { clientAxios } from '../utils/axios'
-import { useHistory } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import { Box } from '@material-ui/core'
 import firebase from '../firebase/Firebase'
 import { setFirebaseUser, setFirebaseToken, setInitialUser } from '../store/user/actions'
-import { RootStore } from "../store";
 import Loading from '../components/Loading'
 import { ErrorUi } from '../store/ui/actions';
 
@@ -17,8 +15,6 @@ interface Props {
 const Initial: React.FC<Props> = ({ children }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
-  let history = useHistory()
-  // const { user } = useSelector((state: RootStore) => state)
   const [isLoaded, setIsLoaded] = useState(false)
 
   const backendAuth = async (id: string) => {
