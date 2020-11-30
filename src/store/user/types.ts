@@ -17,6 +17,7 @@ export interface UserStore {
   profile: string | null
   skill: string | null
   genrus: ChipData[]
+  instruments: ChipData[]
   emailVerified: boolean
   isLoaded: boolean
 }

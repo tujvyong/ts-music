@@ -17,6 +17,7 @@ const initialState = {
   profile: null,
   skill: null,
   genrus: [],
+  instruments: [],
   emailVerified: false,
   isLoaded: false,
 }

@@ -4,6 +4,7 @@ export interface ProfileEdit {
   profile: boolean
   skill: boolean
   genrus: boolean
+  instruments: boolean
 }
 
 export interface ChipData {

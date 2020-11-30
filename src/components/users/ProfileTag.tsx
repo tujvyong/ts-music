@@ -8,16 +8,18 @@ import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import { RootStore } from '../../store'
 import { updateState } from '../../store/user/actions'
-import { APIresponce, clientAxios, userUpdateGenru } from '../../utils/axios';
+import { APIresponce, clientAxios, userUpdateTags } from '../../utils/axios';
 import { ProfileEdit, ChipData } from '../../utils/types'
 import { ErrorUi, BackdropUi } from '../../store/ui/actions'
 
 interface Props {
+  title: string
+  itemName: "genrus" | "instruments"
   editable: boolean
   setEdit: React.Dispatch<React.SetStateAction<ProfileEdit>>
 }
 
-const ProfileTag: React.FC<Props> = ({ editable, setEdit }) => {
+const ProfileTag: React.FC<Props> = ({ title, editable, itemName, setEdit }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const user = useSelector((state: RootStore) => state.user)
@@ -25,7 +27,7 @@ const ProfileTag: React.FC<Props> = ({ editable, setEdit }) => {
     label: '',
   })
   const [isChanged, setIsChanged] = useState(false)
-  const [chipData, setChipData] = React.useState<ChipData[]>([]);
+  const [chipData, setChipData] = useState<ChipData[]>([]);
 
   const handleDelete = (chipToDelete: ChipData) => () => {
     setChipData((chips) => chips.filter((chip) => chip.label !== chipToDelete.label));
@@ -52,7 +54,7 @@ const ProfileTag: React.FC<Props> = ({ editable, setEdit }) => {
     setEdit(state => {
       return {
         ...state,
-        genrus: true
+        [itemName]: true
       }
     })
   }
@@ -70,7 +72,7 @@ const ProfileTag: React.FC<Props> = ({ editable, setEdit }) => {
     setEdit(state => {
       return {
         ...state,
-        genrus: false
+        [itemName]: false
       }
     })
   }
@@ -80,16 +82,16 @@ const ProfileTag: React.FC<Props> = ({ editable, setEdit }) => {
     if (token === null || uid === null) { return }
 
     dispatch(BackdropUi(true))
-    const res: APIresponce = await userUpdateGenru(token, chipData)
+    const res: APIresponce = await userUpdateTags(token, chipData, itemName)
     if (res.status !== 204) {
       dispatch(ErrorUi(res.error as string))
       return
     }
-    dispatch(updateState('genrus', chipData))
+    dispatch(updateState(itemName, chipData))
     setEdit(state => {
       return {
         ...state,
-        genrus: false
+        [itemName]: false
       }
     })
     dispatch(BackdropUi(false))
@@ -97,14 +99,14 @@ const ProfileTag: React.FC<Props> = ({ editable, setEdit }) => {
 
   useEffect(() => {
     (async () => {
-      const resp = await clientAxios.get("/genru", { withCredentials: true })
+      const resp = await clientAxios.get(`/${itemName}`, { withCredentials: true })
       if (resp.status !== 200) {
         console.error(resp.data.error)
         return
       }
       setChipData(resp.data)
     })()
-  }, [])
+  }, [itemName])
 
   let content
   if (editable) {
@@ -145,10 +147,10 @@ const ProfileTag: React.FC<Props> = ({ editable, setEdit }) => {
       <div className={classes.showBox}>
         <Grid container spacing={2}>
           <Grid item>
-            <Typography component="h2" variant="h6">ジャンル</Typography>
+            <Typography component="h2" variant="h6">{title}</Typography>
           </Grid>
           <Grid item>
-            <Button name="genru" color="secondary" onClick={handelEdit}>編集する</Button>
+            <Button name={itemName} color="secondary" onClick={handelEdit}>編集する</Button>
           </Grid>
         </Grid>
         <ul className={classes.tagRoot}>

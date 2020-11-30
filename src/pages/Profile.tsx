@@ -22,6 +22,7 @@ const Profile: React.FC<Props> = () => {
     profile: false,
     skill: false,
     genrus: false,
+    instruments: false
   })
 
   return (
@@ -57,7 +58,15 @@ const Profile: React.FC<Props> = () => {
         multi
       />
       <ProfileTag
+        title="ジャンル"
+        itemName="genrus"
         editable={edit.genrus}
+        setEdit={setEdit}
+      />
+      <ProfileTag
+        title="楽器"
+        itemName="instruments"
+        editable={edit.instruments}
         setEdit={setEdit}
       />
     </Container>

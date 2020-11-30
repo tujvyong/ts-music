@@ -32,9 +32,15 @@ export const userUpdate = async (token: string, uid: string, column: string, src
   return { status: resp.status }
 }
 
-export const userUpdateGenru = async (token: string, tags: ChipData[]) => {
+export const userUpdateTags = async (token: string, tags: ChipData[], itemName: "genrus" | "instruments") => {
+  let url = ''
+  if (itemName === "genrus") {
+    url = "/genrus"
+  } else if (itemName === "instruments") {
+    url = "/instruments"
+  }
   const resp = await clientAxios.post(
-    "/genru",
+    url,
     tags,
     { headers: { 'Authorization': 'Bearer ' + token }, withCredentials: true }
   )
