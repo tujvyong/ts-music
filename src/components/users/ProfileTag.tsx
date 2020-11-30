@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
@@ -11,6 +11,7 @@ import { updateState } from '../../store/user/actions'
 import { APIresponce, clientAxios, userUpdateTags } from '../../utils/axios';
 import { ProfileEdit, ChipData } from '../../utils/types'
 import { ErrorUi, BackdropUi } from '../../store/ui/actions'
+import { throttle } from "lodash";
 
 interface Props {
   title: string
@@ -19,15 +20,21 @@ interface Props {
   setEdit: React.Dispatch<React.SetStateAction<ProfileEdit>>
 }
 
+interface Newer extends ChipData {
+  isTyped: boolean
+}
+
 const ProfileTag: React.FC<Props> = ({ title, editable, itemName, setEdit }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const user = useSelector((state: RootStore) => state.user)
-  const [newer, setNewer] = useState<ChipData>({
+  const [newer, setNewer] = useState<Newer>({
     label: '',
+    isTyped: false,
   })
   const [isChanged, setIsChanged] = useState(false)
   const [chipData, setChipData] = useState<ChipData[]>([]);
+  const [searchData, setSearchData] = useState<ChipData[]>([]);
 
   const handleDelete = (chipToDelete: ChipData) => () => {
     setChipData((chips) => chips.filter((chip) => chip.label !== chipToDelete.label));
@@ -41,13 +48,23 @@ const ProfileTag: React.FC<Props> = ({ title, editable, itemName, setEdit }) => 
         chips.push({ label: newer.label })
         return chips
       })
-      setNewer({ label: '' })
+      setNewer({ label: '', isTyped: false })
       setIsChanged(true)
     }
   }
 
+  const handleClickAdd = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    setChipData((chips) => {
+      chips.push({ label: e.currentTarget.textContent as string })
+      return chips
+    })
+    setNewer({ label: '', isTyped: false })
+    setIsChanged(true)
+  }
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewer({ ...newer, label: e.target.value })
+    setNewer({ label: e.target.value, isTyped: true })
+    searchTags(e.target.value)
   }
 
   const handelEdit = () => {
@@ -76,6 +93,21 @@ const ProfileTag: React.FC<Props> = ({ title, editable, itemName, setEdit }) => 
       }
     })
   }
+
+  const searchTags = useCallback(throttle(async (keyword) => {
+    const { token } = user
+    const res = await clientAxios.post(
+      `/${itemName}/search`,
+      { keyword: keyword },
+      { headers: { 'Authorization': 'Bearer ' + token }, withCredentials: true }
+    )
+    if (res.status !== 200) {
+      dispatch(ErrorUi(res.data.error))
+      return
+    }
+    console.log(res.data)
+    setSearchData(res.data)
+  }, 3000), [user.token])
 
   const updateSubmit = async () => {
     const { token, uid } = user
@@ -138,6 +170,23 @@ const ProfileTag: React.FC<Props> = ({ title, editable, itemName, setEdit }) => 
             />
           </li>
         </ul>
+        <div className={classes.searchedBox} style={{ display: newer.isTyped ? 'block' : 'none' }}>
+          <Typography component="span" variant="caption">もしかして</Typography>
+          <ul className={classes.tagRoot}>
+            {searchData.map((data, index) => {
+              return (
+                <li key={index}>
+                  <Chip
+                    label={data.label}
+                    onClick={handleClickAdd}
+                    className={classes.chip}
+                    variant="outlined"
+                  />
+                </li>
+              );
+            })}
+          </ul>
+        </div>
         <Button variant="outlined" color="primary" onClick={updateSubmit}>更新する</Button>
         <Button onClick={handleCancel}>キャンセル</Button>
       </Paper>
@@ -191,9 +240,13 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: theme.spacing(3),
       padding: theme.spacing(2),
     },
+    searchedBox: {
+      borderRadius: theme.shape.borderRadius,
+      backgroundColor: theme.palette.background.default,
+    },
     tagRoot: {
       display: 'flex',
-      justifyContent: 'center',
+      // justifyContent: 'center',
       flexWrap: 'wrap',
       listStyle: 'none',
       padding: theme.spacing(0.5),
