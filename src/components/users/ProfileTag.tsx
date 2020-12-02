@@ -128,6 +128,7 @@ const ProfileTag: React.FC<Props> = ({ title, editable, itemName, setEdit }) => 
         [itemName]: false
       }
     })
+    setIsChanged(false)
     dispatch(BackdropUi(false))
   }
 
@@ -190,7 +191,7 @@ const ProfileTag: React.FC<Props> = ({ title, editable, itemName, setEdit }) => 
           </ul>
         </div>
         <Button variant="outlined" color="primary" onClick={updateSubmit}>更新する</Button>
-        <Button onClick={handleCancel}>キャンセル</Button>
+        <Button onClick={handleCancel} style={{ marginLeft: '8px' }}>キャンセル</Button>
       </Paper>
     )
   } else {
@@ -198,7 +199,7 @@ const ProfileTag: React.FC<Props> = ({ title, editable, itemName, setEdit }) => 
       <div className={classes.showBox}>
         <Grid container spacing={2}>
           <Grid item>
-            <Typography component="h2" variant="h4">
+            <Typography component="h2" variant="h5">
               {title}
               <IconButton className={classes.editIcon} onClick={handelEdit}>
                 <EditIcon />
@@ -257,7 +258,8 @@ const useStyles = makeStyles((theme: Theme) =>
       flexWrap: 'wrap',
       listStyle: 'none',
       padding: theme.spacing(0.5),
-      margin: 0,
+      marginTop: 0,
+      marginBottom: theme.spacing(1),
     },
     chip: {
       margin: theme.spacing(0.5),

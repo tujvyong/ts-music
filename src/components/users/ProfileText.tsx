@@ -91,8 +91,8 @@ const ProfileText: React.FC<Props> = ({ label, itemName, value, editable, setEdi
           // required
           fullWidth
           multiline={multi}
-          rows={6}
-          rowsMax={6}
+          rows={8}
+          rowsMax={8}
           id={itemName}
           value={tmpState.body}
           name={itemName}
@@ -100,7 +100,7 @@ const ProfileText: React.FC<Props> = ({ label, itemName, value, editable, setEdi
           onChange={handleChange}
         />
         <Button variant="outlined" color="primary" onClick={updateSubmit}>更新する</Button>
-        <Button onClick={handleCancel}>キャンセル</Button>
+        <Button onClick={handleCancel} style={{ marginLeft: '8px' }}>キャンセル</Button>
       </Paper>
     )
   } else {
@@ -108,7 +108,7 @@ const ProfileText: React.FC<Props> = ({ label, itemName, value, editable, setEdi
       <div className={classes.showBox}>
         <Grid container spacing={2}>
           <Grid item>
-            <Typography component="h2" variant="h4">
+            <Typography component="h2" variant="h5">
               {label}
               <IconButton className={classes.editIcon} onClick={handelEdit}>
                 <EditIcon />
