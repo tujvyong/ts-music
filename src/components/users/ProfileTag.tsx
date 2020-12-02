@@ -6,6 +6,8 @@ import Typography from '@material-ui/core/Typography'
 import Chip from '@material-ui/core/Chip';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import EditIcon from '@material-ui/icons/Edit';
 import { RootStore } from '../../store'
 import { updateState } from '../../store/user/actions'
 import { APIresponce, clientAxios, userUpdateTags } from '../../utils/axios';
@@ -196,10 +198,12 @@ const ProfileTag: React.FC<Props> = ({ title, editable, itemName, setEdit }) => 
       <div className={classes.showBox}>
         <Grid container spacing={2}>
           <Grid item>
-            <Typography component="h2" variant="h6">{title}</Typography>
-          </Grid>
-          <Grid item>
-            <Button name={itemName} color="secondary" onClick={handelEdit}>編集する</Button>
+            <Typography component="h2" variant="h4">
+              {title}
+              <IconButton className={classes.editIcon} onClick={handelEdit}>
+                <EditIcon />
+              </IconButton>
+            </Typography>
           </Grid>
         </Grid>
         <ul className={classes.tagRoot}>
@@ -239,6 +243,9 @@ const useStyles = makeStyles((theme: Theme) =>
     editBox: {
       marginBottom: theme.spacing(3),
       padding: theme.spacing(2),
+    },
+    editIcon: {
+      marginLeft: '4px',
     },
     searchedBox: {
       borderRadius: theme.shape.borderRadius,

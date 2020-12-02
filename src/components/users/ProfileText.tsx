@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
-import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
+import { Button, Grid, Paper, TextField, Typography, IconButton } from '@material-ui/core'
+import EditIcon from '@material-ui/icons/Edit';
 import { RootStore } from '../../store'
 import { BackdropUi, ErrorUi } from "../../store/ui/actions";
 import { updateState } from '../../store/user/actions'
@@ -64,7 +65,7 @@ const ProfileText: React.FC<Props> = ({ label, itemName, value, editable, setEdi
     if (token === null || uid === null) { return }
 
     dispatch(BackdropUi(true))
-    const res: APIresponce = await userUpdate(token, uid, itemName, srcData)
+    const res: APIresponce = await userUpdate(token, { [itemName]: srcData })
     if (res.status !== 204) {
       dispatch(ErrorUi(res.error as string))
       return
@@ -107,10 +108,12 @@ const ProfileText: React.FC<Props> = ({ label, itemName, value, editable, setEdi
       <div className={classes.showBox}>
         <Grid container spacing={2}>
           <Grid item>
-            <Typography component="h2" variant="h6">{label}</Typography>
-          </Grid>
-          <Grid item>
-            <Button name={itemName} color="secondary" onClick={handelEdit}>編集する</Button>
+            <Typography component="h2" variant="h4">
+              {label}
+              <IconButton className={classes.editIcon} onClick={handelEdit}>
+                <EditIcon />
+              </IconButton>
+            </Typography>
           </Grid>
         </Grid>
         <Typography>{value}</Typography>
@@ -130,11 +133,14 @@ export default ProfileText
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     showBox: {
-      marginBottom: theme.spacing(3),
+      margin: `${theme.spacing(3)}px 0`,
     },
     editBox: {
-      marginBottom: theme.spacing(3),
+      margin: `${theme.spacing(3)}px 0`,
       padding: theme.spacing(2),
+    },
+    editIcon: {
+      marginLeft: '4px',
     },
   })
 )

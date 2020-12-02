@@ -21,19 +21,13 @@ const ProfileImg: React.FC<Props> = ({ setEdit }) => {
 
   return (
     <>
-      <Grid container spacing={2}>
-        <Grid item>
-          <Typography component="h2" variant="h6">プロフィール画像</Typography>
-        </Grid>
-        <Grid item>
-          <Button color="secondary" onClick={handleEdit}>編集する</Button>
-        </Grid>
-      </Grid>
-      <Avatar
-        alt="User Avatar"
-        src={photoURL ?? ''}
-        classes={{ root: classes.avatarRoot }}
-      />
+      <Button onClick={handleEdit} className={classes.root}>
+        <Avatar
+          alt="User Avatar"
+          src={photoURL ?? ''}
+          classes={{ root: classes.avatarRoot, colorDefault: classes.avatarColor }}
+        />
+      </Button>
     </>
   )
 }
@@ -42,14 +36,18 @@ export default ProfileImg
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    root: {
+      alignSelf: 'flex-end',
+      marginRight: '24px',
+    },
     avatarRoot: {
-      display: 'inline-block',
+      display: 'flex',
       width: '160px',
       height: '160px',
     },
-    avatarIcon: {
-      width: '100%',
-      height: '100%',
-    },
+    avatarColor: {
+      color: theme.palette.background.paper,
+      backgroundColor: theme.palette.background.default,
+    }
   })
 )

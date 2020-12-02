@@ -7,6 +7,18 @@ export interface APIresponce {
   message?: string
 }
 
+interface RequestUser {
+  username?: string
+  bio?: string
+  place?: string
+  photoURL?: string | null
+  bgURL?: string
+  profile?: string
+  skill?: string
+  genrus?: ChipData[]
+  instruments?: ChipData[]
+}
+
 export const clientAxios = axios.create({
   baseURL: "http://localhost/",
   headers: {
@@ -19,10 +31,10 @@ clientAxios.interceptors.response.use(
   error => error.response || error
 )
 
-export const userUpdate = async (token: string, uid: string, column: string, src: string | null) => {
+export const userUpdate = async (token: string, req: RequestUser) => {
   const resp = await clientAxios.put(
     "/user",
-    { u: uid, c: column, s: src },
+    req,
     { headers: { 'Authorization': 'Bearer ' + token }, withCredentials: true }
   )
   if (resp.status !== 204) {

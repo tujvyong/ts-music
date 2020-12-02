@@ -3,8 +3,8 @@ import { useTheme } from '@material-ui/core/styles';
 import { useSelector, useDispatch } from 'react-redux';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
-import { Avatar, Button, FormControlLabel, Checkbox, Dialog, DialogContent, DialogActions, LinearProgress } from '@material-ui/core'
-import PersonIcon from '@material-ui/icons/Person';
+import { Avatar, Button, FormControlLabel, Checkbox, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, LinearProgress } from '@material-ui/core'
+import CloseIcon from '@material-ui/icons/Close';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
@@ -168,12 +168,16 @@ export const ImageUpload: React.FC<Props> = ({ editable, setEdit }) => {
     setIsCroping(false)
   }
 
+  const handleClose = () => {
+    setEdit(state => { return { ...state, photo: false } })
+  }
+
   const handleUpload = () => {
     if (token === null || uid === null) { return }
     if (isDelete) {
       storage.child(`images/users/${uid}.jpg`).delete().then(async () => {
         console.log("success delete image")
-        const res: APIresponce = await userUpdate(token, uid, 'photo_url', null)
+        const res: APIresponce = await userUpdate(token, { 'photoURL': null })
         if (res.status !== 204) {
           dispatch(ErrorUi(res.error as string))
           return
@@ -221,7 +225,7 @@ export const ImageUpload: React.FC<Props> = ({ editable, setEdit }) => {
       },
       async () => {
         const filePath = uploadTask.snapshot.ref.fullPath
-        const res: APIresponce = await userUpdate(token, uid, 'photo_url', filePath)
+        const res: APIresponce = await userUpdate(token, { 'photoURL': filePath })
         if (res.status !== 204) {
           dispatch(ErrorUi(res.error as string))
           return
@@ -266,15 +270,18 @@ export const ImageUpload: React.FC<Props> = ({ editable, setEdit }) => {
   } else {
     $imagePreview = (
       <div style={{ textAlign: 'center' }}>
-        <Avatar alt="User image is none" classes={{ root: classes.avatarRoot }} >
-          <PersonIcon classes={{ root: classes.avatarIcon }} />
-        </Avatar>
+        <Avatar alt="User image is none" classes={{ root: classes.avatarRoot }} />
       </div>
     )
   }
 
   return (
     <Dialog open={editable} fullWidth maxWidth={isMobile ? "xl" : "md"} >
+      <DialogTitle>
+        <IconButton aria-label="close" className={classes.closeButton} onClick={handleClose}>
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
       <DialogContent>
         {$imagePreview}
       </DialogContent>
@@ -302,13 +309,15 @@ export const ImageUpload: React.FC<Props> = ({ editable, setEdit }) => {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     avatarRoot: {
-      display: 'inline-block',
+      display: 'flex',
       width: '160px',
       height: '160px',
     },
-    avatarIcon: {
-      width: '100%',
-      height: '100%',
+    closeButton: {
+      position: 'absolute',
+      right: theme.spacing(1),
+      top: theme.spacing(1),
+      color: theme.palette.grey[500],
     },
   })
 )

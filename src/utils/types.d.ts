@@ -1,6 +1,6 @@
 export interface ProfileEdit {
   photo: boolean
-  username: boolean
+  basic: boolean
   profile: boolean
   skill: boolean
   genrus: boolean
