@@ -2,7 +2,7 @@ export interface ProfileEdit {
   photo: boolean
   basic: boolean
   profile: boolean
-  skill: boolean
+  folio: boolean
   genrus: boolean
   instruments: boolean
 }

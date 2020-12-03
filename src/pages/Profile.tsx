@@ -9,6 +9,7 @@ import { ImageUpload } from '../components/users/ImageUpload'
 import ProfileTag from '../components/users/ProfileTag'
 import { ProfileEdit } from '../utils/types'
 import ProfileBasic from '../components/users/ProfileBasic'
+import ProfileFolio from '../components/users/ProfileFolio'
 
 interface Props {
 
@@ -21,15 +22,18 @@ const Profile: React.FC<Props> = () => {
     photo: false,
     basic: false,
     profile: false,
-    skill: false,
+    folio: false,
     genrus: false,
     instruments: false
   })
+
+  // const bg = user.bgURL !== '' ? `url(${user.bgURL})` : 'rgb(83, 83, 83)'
 
   return (
     <>
       <div className={classes.profileTopBox}>
         <div style={{ backgroundColor: 'rgb(83, 83, 83)' }} className={classes.bgDefault}></div>
+        <div style={{ backgroundImage: `url(${user.bgURL})` }} className={classes.bgImage}></div>
         <div className={classes.bgLiner}></div>
         <Container>
           <div className={classes.profileTopItems}>
@@ -49,6 +53,10 @@ const Profile: React.FC<Props> = () => {
 
 
       <Container>
+        <ProfileFolio
+          editable={edit.folio}
+          setEdit={setEdit}
+        />
         <ProfileText
           label="プロフィール"
           itemName="profile"
@@ -88,6 +96,16 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100%',
       top: 0,
       left: 0,
+    },
+    bgImage: {
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      top: 0,
+      left: 0,
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'center center',
+      backgroundSize: 'cover',
     },
     bgLiner: {
       background: 'linear-gradient(transparent,rgba(0,0,0,.5))',

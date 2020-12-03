@@ -11,7 +11,7 @@ interface RequestUser {
   username?: string
   bio?: string
   place?: string
-  photoURL?: string | null
+  photoURL?: string
   bgURL?: string
   profile?: string
   skill?: string
