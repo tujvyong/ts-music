@@ -9,6 +9,7 @@ import { BackdropUi, ErrorUi } from "../../store/ui/actions";
 import { updateBasic, updateState } from '../../store/user/actions'
 import { userUpdate, APIresponce } from '../../utils/axios'
 import { ProfileEdit } from '../../utils/types'
+import { BgUpload } from './BgUpload';
 
 interface Props {
   editable: boolean
@@ -19,6 +20,7 @@ const ProfileBasic: React.FC<Props> = ({ editable, setEdit }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const user = useSelector((state: RootStore) => state.user)
+  const [editBg, setEditBg] = useState(false)
   const [tmpState, setTmpState] = useState({
     username: user.username,
     bio: user.bio,
@@ -62,6 +64,10 @@ const ProfileBasic: React.FC<Props> = ({ editable, setEdit }) => {
     })
   }
 
+  const handleEditBg = () => {
+    setEditBg(!editBg)
+  }
+
   const updateSubmit = async () => {
     const { token, uid } = user
     let validUsername = tmpState.username.trim()
@@ -88,9 +94,24 @@ const ProfileBasic: React.FC<Props> = ({ editable, setEdit }) => {
   }
 
   let content
-  if (editable) {
+  if (editBg) {
+    content = (
+      <BgUpload
+        editable={editBg}
+        setEdit={setEditBg}
+      />
+    )
+  } else if (editable) {
     content = (
       <Dialog open={editable} fullWidth maxWidth="xs" className={classes.editBox}>
+        <div
+          style={{ backgroundImage: `url(${user.bgURL})` }}
+          className={classes.bgShape}
+          onClick={handleEditBg}
+        >
+          <div className={classes.bgLiner}></div>
+          <Typography color="textSecondary" variant="body2" className={classes.bgText}>カバー写真を変更</Typography>
+        </div>
         <DialogContent>
           <TextField
             variant="outlined"
@@ -177,6 +198,27 @@ const useStyles = makeStyles((theme: Theme) =>
     roomIcon: {
       verticalAlign: 'text-bottom',
       marginRight: '4px',
+    },
+    bgShape: {
+      position: 'relative',
+      height: 0,
+      width: '100%',
+      paddingTop: '100px',
+      cursor: 'pointer',
+    },
+    bgLiner: {
+      background: 'linear-gradient(transparent,rgba(0,0,0,.5))',
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      top: 0,
+      left: 0,
+    },
+    bgText: {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
     }
   })
 )
