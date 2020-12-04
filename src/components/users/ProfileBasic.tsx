@@ -69,15 +69,13 @@ const ProfileBasic: React.FC<Props> = ({ editable, setEdit }) => {
   }
 
   const updateSubmit = async () => {
-    const { token, uid } = user
     let validUsername = tmpState.username.trim()
     let validBio = tmpState.bio.trim()
     let validPlace = tmpState.place.trim()
     if (validUsername === undefined || validUsername === '') { return }
-    if (token === null || uid === null) { return }
 
     dispatch(BackdropUi(true))
-    const res: APIresponce = await userUpdate(token, { "username": validUsername, "bio": validBio, "place": validPlace })
+    const res: APIresponce = await userUpdate({ "username": validUsername, "bio": validBio, "place": validPlace })
     if (res.status !== 204) {
       dispatch(ErrorUi(res.error as string))
       return

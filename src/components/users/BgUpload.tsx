@@ -37,7 +37,7 @@ export const BgUpload: React.FC<Props> = ({ editable, setEdit }) => {
   const theme = useTheme();
   const classes = useStyles()
   const dispatch = useDispatch()
-  const { bgURL, uid, token } = useSelector((state: RootStore) => state.user)
+  const { bgURL, uid } = useSelector((state: RootStore) => state.user)
   // image status
   const [state, setState] = useState<State>({
     file: null,
@@ -173,11 +173,10 @@ export const BgUpload: React.FC<Props> = ({ editable, setEdit }) => {
   }
 
   const handleUpload = () => {
-    if (token === null || uid === null) { return }
     if (isDelete) {
       storage.child(`images/users/bg_${uid}.jpg`).delete().then(async () => {
         console.log("success delete image")
-        const res: APIresponce = await userUpdate(token, { 'bgURL': '' })
+        const res: APIresponce = await userUpdate({ 'bgURL': '' })
         if (res.status !== 204) {
           dispatch(ErrorUi(res.error as string))
           return
@@ -225,7 +224,7 @@ export const BgUpload: React.FC<Props> = ({ editable, setEdit }) => {
       },
       async () => {
         const filePath = uploadTask.snapshot.ref.fullPath
-        const res: APIresponce = await userUpdate(token, { 'bgURL': filePath })
+        const res: APIresponce = await userUpdate({ 'bgURL': filePath })
         if (res.status !== 204) {
           dispatch(ErrorUi(res.error as string))
           return

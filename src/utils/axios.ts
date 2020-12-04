@@ -1,9 +1,11 @@
 import axios from 'axios'
+import firebase from "../firebase/Firebase";
 import { ChipData } from './types'
 
 export interface APIresponce {
   status: number
   error?: string
+  data?: any
   message?: string
 }
 
@@ -31,7 +33,24 @@ clientAxios.interceptors.response.use(
   error => error.response || error
 )
 
-export const userUpdate = async (token: string, req: RequestUser) => {
+const APIauthrization: () => Promise<string | null> = async () => {
+  let user = firebase.auth().currentUser
+
+  if (user) {
+    const idToken = await user.getIdToken(true).catch((err) => {
+      console.error(err)
+      return null
+    })
+    return idToken
+  } else {
+    return null
+  }
+}
+
+export const userUpdate = async (req: RequestUser) => {
+  let token = await APIauthrization()
+  if (!token) return { status: 401, message: "You must logged in" }
+
   const resp = await clientAxios.put(
     "/user",
     req,
@@ -44,7 +63,10 @@ export const userUpdate = async (token: string, req: RequestUser) => {
   return { status: resp.status }
 }
 
-export const userUpdateTags = async (token: string, tags: ChipData[], itemName: "genrus" | "instruments") => {
+export const userUpdateTags = async (tags: ChipData[], itemName: "genrus" | "instruments") => {
+  let token = await APIauthrization()
+  if (!token) return { status: 401, message: "You must logged in" }
+
   let url = ''
   if (itemName === "genrus") {
     url = "/genrus"
@@ -61,4 +83,19 @@ export const userUpdateTags = async (token: string, tags: ChipData[], itemName: 
     return { status: resp.status, error: resp.data.error }
   }
   return { status: resp.status }
+}
+
+export const userGetPortfolios = async (userID: string) => {
+  let token = await APIauthrization()
+  if (!token) return { status: 401, message: "You must logged in" }
+
+  const resp = await clientAxios.get(
+    `/users/${userID}/portfolios`,
+    { headers: { 'Authorization': 'Bearer ' + token }, withCredentials: true }
+  )
+  if (resp.status !== 200) {
+    console.error(resp.data.error)
+    return { status: resp.status, error: resp.data.error }
+  }
+  return { status: resp.status, data: resp.data }
 }

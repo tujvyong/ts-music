@@ -112,11 +112,8 @@ const ProfileTag: React.FC<Props> = ({ title, editable, itemName, setEdit }) => 
   }, 3000), [user.token])
 
   const updateSubmit = async () => {
-    const { token, uid } = user
-    if (token === null || uid === null) { return }
-
     dispatch(BackdropUi(true))
-    const res: APIresponce = await userUpdateTags(token, chipData, itemName)
+    const res: APIresponce = await userUpdateTags(chipData, itemName)
     if (res.status !== 204) {
       dispatch(ErrorUi(res.error as string))
       return

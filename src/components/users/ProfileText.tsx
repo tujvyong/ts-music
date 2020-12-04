@@ -59,13 +59,11 @@ const ProfileText: React.FC<Props> = ({ label, itemName, value, editable, setEdi
   }
 
   const updateSubmit = async () => {
-    const { token, uid } = user
     let srcData = tmpState.body?.trim()
     if (srcData === undefined || srcData === '') { return }
-    if (token === null || uid === null) { return }
 
     dispatch(BackdropUi(true))
-    const res: APIresponce = await userUpdate(token, { [itemName]: srcData })
+    const res: APIresponce = await userUpdate({ [itemName]: srcData })
     if (res.status !== 204) {
       dispatch(ErrorUi(res.error as string))
       return
