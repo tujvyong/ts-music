@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import EditIcon from '@material-ui/icons/Edit';
 import RoomIcon from '@material-ui/icons/Room';
-import { Button, Grid, Paper, TextField, Typography, Dialog, DialogContent, DialogActions, useRadioGroup, IconButton } from '@material-ui/core'
+import { Button, Grid, Paper, TextField, Typography, Dialog, DialogContent, DialogActions, IconButton } from '@material-ui/core'
 import { RootStore } from '../../store'
 import { BackdropUi, ErrorUi } from "../../store/ui/actions";
 import { updateBasic, updateState } from '../../store/user/actions'
 import { userUpdate, APIresponce } from '../../utils/axios'
 import { ProfileEdit } from '../../utils/types'
-import { BgUpload } from './BgUpload';
+import { BgUpload } from './basics/BgUpload';
 
 interface Props {
   editable: boolean

@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
-import { Button, Grid, Paper, TextField, Typography, Dialog, DialogContent, DialogActions, useRadioGroup, IconButton, DialogTitle, InputBase } from '@material-ui/core'
+import { Button, TextField, Typography, Dialog, DialogContent, DialogActions, IconButton, DialogTitle, InputBase } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add';
-import { ProfileEdit } from '../../utils/types'
+import { ProfileEdit, PortfolioState, FolioSingleState } from '../../../utils/types'
+import { userUpdatePortfolios } from '../../../utils/axios';
+import { useDispatch } from 'react-redux';
+import { ErrorUi } from '../../../store/ui/actions';
+import { useHistory, useLocation } from 'react-router-dom';
 
 interface Props {
   editable: boolean
@@ -10,13 +14,19 @@ interface Props {
 }
 
 const FolioEdit: React.FC<Props> = ({ editable, setEdit }) => {
+  const location = useLocation<FolioSingleState>()
+  let history = useHistory()
   const classes = useStyles()
-  const [tmpState, setTmpState] = useState({
-    title: '',
+  const dispatch = useDispatch()
+  const [tmpState, setTmpState] = useState<PortfolioState>({
+    ID: location.state?.portfolio.ID ?? 0,
+    title: location.state?.portfolio.title ?? '',
+    imageURL: location.state?.portfolio.imageURL ?? '',
+    linkURL: location.state?.portfolio.linkURL ?? '',
+    description: location.state?.portfolio.description ?? '',
+    youtubeID: location.state?.portfolio.youtubeID ?? '',
+    // below are statements for react DOM
     youtubeURL: '',
-    imageURL: '',
-    linkURL: '',
-    description: '',
     isChanged: false,
   })
 
@@ -28,7 +38,11 @@ const FolioEdit: React.FC<Props> = ({ editable, setEdit }) => {
     let valid = tmpState.youtubeURL.includes('https://www.youtube.com/watch?v=')
     if (valid) {
       const youtubeID = tmpState.youtubeURL.replace('https://www.youtube.com/watch?v=', '').replace(/&.*$/g, '')
-      setTmpState({ ...tmpState, imageURL: `https://i.ytimg.com/vi/${youtubeID}/maxresdefault.jpg` })
+      setTmpState({
+        ...tmpState,
+        imageURL: `https://i.ytimg.com/vi/${youtubeID}/maxresdefault.jpg`,
+        youtubeID: youtubeID,
+      })
     }
   }
 
@@ -36,8 +50,12 @@ const FolioEdit: React.FC<Props> = ({ editable, setEdit }) => {
 
   }
 
-  const handleUpdate = () => {
-
+  const handleUpdate = async () => {
+    const res = await userUpdatePortfolios(tmpState)
+    if (res.status !== 204) {
+      dispatch(ErrorUi(res.error))
+      return
+    }
   }
 
   const handleCancel = () => {
@@ -45,24 +63,13 @@ const FolioEdit: React.FC<Props> = ({ editable, setEdit }) => {
     if (tmpState.isChanged) {
       c = window.confirm("変更が破棄されますが、よろしいですか？")
       if (c) {
-        setTmpState({
-          title: '',
-          youtubeURL: '',
-          imageURL: '',
-          linkURL: '',
-          description: '',
-          isChanged: false
-        })
+        // will unmount
       } else {
         return
       }
     }
-    setEdit(state => {
-      return {
-        ...state,
-        folio: false
-      }
-    })
+    setEdit(state => { return { ...state, folio: false } })
+    history.push("/profile")
   }
 
   return (
@@ -80,7 +87,7 @@ const FolioEdit: React.FC<Props> = ({ editable, setEdit }) => {
       </DialogTitle>
       <DialogContent>
         {tmpState.imageURL !== '' ? (
-          <img className={classes.thumbnail} src={tmpState.imageURL} alt="" />
+          <img className={classes.thumbnail} src={tmpState.imageURL ?? undefined} alt="" />
         ) : (
             <>
               <input id="image-upload" type="file" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} />
@@ -88,6 +95,7 @@ const FolioEdit: React.FC<Props> = ({ editable, setEdit }) => {
                 <Button
                   className={classes.upload}
                   classes={{ label: classes.uploadLabel }}
+                  component="span"
                   disableFocusRipple
                   disableRipple
                 >

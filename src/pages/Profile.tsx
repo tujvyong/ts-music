@@ -5,7 +5,7 @@ import { Container, Grid, Typography, Avatar, Button } from '@material-ui/core'
 import { RootStore } from '../store'
 import ProfileText from '../components/users/ProfileText'
 import ProfileImg from '../components/users/ProfileImg'
-import { ImageUpload } from '../components/users/ImageUpload'
+import { ImageUpload } from '../components/users/basics/ImageUpload'
 import ProfileTag from '../components/users/ProfileTag'
 import { ProfileEdit } from '../utils/types'
 import ProfileBasic from '../components/users/ProfileBasic'
@@ -54,6 +54,7 @@ const Profile: React.FC<Props> = () => {
 
       <Container>
         <ProfileFolio
+          userID={user.uid as string}
           editable={edit.folio}
           setEdit={setEdit}
         />

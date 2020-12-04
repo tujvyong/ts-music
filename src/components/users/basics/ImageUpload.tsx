@@ -8,12 +8,12 @@ import CloseIcon from '@material-ui/icons/Close';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
-import { ErrorUi } from '../../store/ui/actions';
-import { RootStore } from '../../store'
-import firebase, { storage } from "../../firebase/Firebase";
-import { updateState } from '../../store/user/actions';
-import { userUpdate, APIresponce } from '../../utils/axios'
-import { ProfileEdit } from '../../utils/types';
+import { ErrorUi } from '../../../store/ui/actions';
+import { RootStore } from '../../../store'
+import firebase, { storage } from "../../../firebase/Firebase";
+import { updateState } from '../../../store/user/actions';
+import { userUpdate, APIresponce } from '../../../utils/axios'
+import { ProfileEdit } from '../../../utils/types';
 
 
 interface Image {
@@ -30,26 +30,26 @@ interface State {
 
 interface Props {
   editable: boolean
-  setEdit: React.Dispatch<React.SetStateAction<boolean>>
+  setEdit: React.Dispatch<React.SetStateAction<ProfileEdit>>
 }
 
-export const BgUpload: React.FC<Props> = ({ editable, setEdit }) => {
+export const ImageUpload: React.FC<Props> = ({ editable, setEdit }) => {
   const theme = useTheme();
   const classes = useStyles()
   const dispatch = useDispatch()
-  const { bgURL, uid } = useSelector((state: RootStore) => state.user)
+  const { photoURL, uid } = useSelector((state: RootStore) => state.user)
   // image status
   const [state, setState] = useState<State>({
     file: null,
-    imagePreviewUrl: bgURL
+    imagePreviewUrl: photoURL
   })
   const [image, setImage] = useState<Image>({
     imgRef: null,
     crop: {
       unit: '%',
-      width: 200,
-      height: 200,
-      aspect: 16 / 9,
+      width: 40,
+      height: 40,
+      aspect: 1 / 1,
     },
     croppedImageUrl: null,
     croppedImage: null
@@ -83,7 +83,7 @@ export const BgUpload: React.FC<Props> = ({ editable, setEdit }) => {
   }
 
   const onLoad = useCallback(img => {
-    const aspect = 16 / 9;
+    const aspect = 1 / 1;
     const width = img.width / aspect < img.height * aspect ? 100 : ((img.height * aspect) / img.width) * 100;
     const height = img.width / aspect > img.height * aspect ? 100 : (img.width / aspect / img.height) * 100;
     const y = (100 - height) / 2;
@@ -117,8 +117,8 @@ export const BgUpload: React.FC<Props> = ({ editable, setEdit }) => {
     const canvas = document.createElement("canvas");
     const scaleX = img.naturalWidth / img.width;
     const scaleY = img.naturalHeight / img.height;
-    canvas.width = crop.width ?? 200;
-    canvas.height = crop.height ?? 200;
+    canvas.width = crop.width ?? 40;
+    canvas.height = crop.height ?? 40;
     const ctx = canvas.getContext("2d");
     if (ctx === null) { return }
 
@@ -169,20 +169,20 @@ export const BgUpload: React.FC<Props> = ({ editable, setEdit }) => {
   }
 
   const handleClose = () => {
-    setEdit(false)
+    setEdit(state => { return { ...state, photo: false } })
   }
 
   const handleUpload = () => {
     if (isDelete) {
-      storage.child(`images/users/bg_${uid}.jpg`).delete().then(async () => {
+      storage.child(`images/users/${uid}.jpg`).delete().then(async () => {
         console.log("success delete image")
-        const res: APIresponce = await userUpdate({ 'bgURL': '' })
+        const res: APIresponce = await userUpdate({ 'photoURL': '' })
         if (res.status !== 204) {
           dispatch(ErrorUi(res.error as string))
           return
         }
         dispatch(updateState('photoURL', ''))
-        setEdit(false)
+        setEdit(state => { return { ...state, photo: false } })
       }).catch((err) => {
         console.error(err)
       })
@@ -192,7 +192,7 @@ export const BgUpload: React.FC<Props> = ({ editable, setEdit }) => {
     if (state.file === null) { return }
 
     let metadata = { contentType: 'image/jpeg' }
-    const uploadTask = storage.child(`images/users/bg_${uid}.jpg`).put(state.file, metadata)
+    const uploadTask = storage.child(`images/users/${uid}.jpg`).put(state.file, metadata)
     uploadTask.on('state_changed',
       (snapshot) => {
         let prog = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
@@ -224,13 +224,13 @@ export const BgUpload: React.FC<Props> = ({ editable, setEdit }) => {
       },
       async () => {
         const filePath = uploadTask.snapshot.ref.fullPath
-        const res: APIresponce = await userUpdate({ 'bgURL': filePath })
+        const res: APIresponce = await userUpdate({ 'photoURL': filePath })
         if (res.status !== 204) {
           dispatch(ErrorUi(res.error as string))
           return
         }
-        dispatch(updateState('bgURL', process.env.REACT_APP_STORAGE_PATH as string + filePath))
-        setEdit(false)
+        dispatch(updateState('photoURL', process.env.REACT_APP_STORAGE_PATH as string + filePath))
+        setEdit(state => { return { ...state, photo: false } })
       }
     )
   }
@@ -243,18 +243,24 @@ export const BgUpload: React.FC<Props> = ({ editable, setEdit }) => {
     )
   } else if (isCroping && imagePreviewUrl) {
     $imagePreview = (
+
       <ReactCrop
         src={imagePreviewUrl}
         crop={image.crop}
         onChange={newCrop => setImage({ ...image, crop: newCrop })}
         onImageLoaded={onLoad}
         onComplete={onCropComplete}
+        circularCrop
       />
     )
   } else if (imagePreviewUrl) {
     $imagePreview = (
-      <div>
-        <div style={{ backgroundImage: `url(${image.croppedImageUrl})` }} className={classes.bgShape}></div>
+      <div className={classes.imageWrapperBox}>
+        <Avatar
+          alt="User Avatar"
+          src={image.croppedImageUrl || state.imagePreviewUrl as string}
+          classes={{ root: classes.avatarRoot }}
+        />
         <FormControlLabel
           control={<Checkbox checked={isDelete} onChange={() => setIsDelete(!isDelete)} color="primary" />}
           label="画像を削除する"
@@ -263,8 +269,8 @@ export const BgUpload: React.FC<Props> = ({ editable, setEdit }) => {
     )
   } else {
     $imagePreview = (
-      <div>
-        <div></div>
+      <div className={classes.imageWrapperBox}>
+        <Avatar alt="User image is none" classes={{ root: classes.avatarRoot }} />
       </div>
     )
   }
@@ -302,17 +308,21 @@ export const BgUpload: React.FC<Props> = ({ editable, setEdit }) => {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    avatarRoot: {
+      display: 'flex',
+      width: '160px',
+      height: '160px',
+      margin: theme.spacing(1),
+    },
     closeButton: {
       position: 'absolute',
       right: theme.spacing(1),
       top: theme.spacing(1),
       color: theme.palette.grey[500],
     },
-    bgShape: {
-      position: 'relative',
-      height: 0,
-      width: '100%',
-      paddingTop: '240px',
-    },
+    imageWrapperBox: {
+      display: 'flex',
+      justifyContent: 'center',
+    }
   })
 )
