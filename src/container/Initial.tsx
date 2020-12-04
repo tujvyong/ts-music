@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
 import { Box } from '@material-ui/core'
 import firebase from '../firebase/Firebase'
-import { setFirebaseUser, setFirebaseToken, setInitialUser } from '../store/user/actions'
+import { setInitialUser } from '../store/user/actions'
 import Loading from '../components/Loading'
 import { ErrorUi } from '../store/ui/actions';
 
@@ -18,21 +18,15 @@ const Initial: React.FC<Props> = ({ children }) => {
   const [isLoaded, setIsLoaded] = useState(false)
 
   const backendAuth = async (id: string) => {
-    dispatch(setFirebaseToken(id))
     const authed = await clientAxios.post(
       "/authorization",
       { data: {} },
-      {
-        headers: {
-          'Authorization': 'Bearer ' + id
-        }
-      },
+      { headers: { 'Authorization': 'Bearer ' + id } },
     ).catch(err => {
       dispatch(ErrorUi(err))
       console.log(err)
     })
     if (authed) {
-      console.log(authed.data)
       dispatch(setInitialUser(authed.data.data))
       setIsLoaded(true)
     }
@@ -41,9 +35,7 @@ const Initial: React.FC<Props> = ({ children }) => {
   useEffect(() => {
     firebase.auth().onAuthStateChanged((currentUser) => {
       if (currentUser) {
-        dispatch(setFirebaseUser(currentUser))
-        // console.log(currentUser)
-        currentUser.getIdToken().then((idToken) => {
+        currentUser.getIdToken(true).then((idToken) => {
           backendAuth(idToken)
         }).catch((err) => {
           dispatch(ErrorUi(err))

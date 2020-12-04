@@ -1,16 +1,12 @@
 import {
   UserStore,
   UserActionTypes,
-  FIREBASE_USER,
-  FIREBASE_TOKEN,
   INIT_STATE,
   UPDATE_BASIC,
   UPDATE_STATE
 } from './types'
 
 const initialState = {
-  firebaseUser: null,
-  token: null,
   uid: null,
   username: '',
   bio: '',
@@ -26,12 +22,6 @@ const initialState = {
 
 export default function userReducer(state = initialState, action: UserActionTypes): UserStore {
   switch (action.type) {
-    case FIREBASE_USER:
-      const currentUser = action.payload
-      return { ...state, firebaseUser: currentUser }
-    case FIREBASE_TOKEN:
-      const idToken = action.payload
-      return { ...state, token: idToken }
     case INIT_STATE:
       const { uid, username, bio, place, photoURL, bgURL, profile, emailVerified } = action.payload
 

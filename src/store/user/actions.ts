@@ -10,19 +10,19 @@ import {
   UpdateUserBasic,
 } from './types'
 
-export const setFirebaseUser = (currentUser: firebase.User) => {
-  return {
-    type: FIREBASE_USER,
-    payload: currentUser
-  }
-}
+// export const setFirebaseUser = (currentUser: firebase.User) => {
+//   return {
+//     type: FIREBASE_USER,
+//     payload: currentUser
+//   }
+// }
 
-export const setFirebaseToken = (idToken: string) => {
-  return {
-    type: FIREBASE_TOKEN,
-    payload: idToken
-  }
-}
+// export const setFirebaseToken = (idToken: string) => {
+//   return {
+//     type: FIREBASE_TOKEN,
+//     payload: idToken
+//   }
+// }
 
 export const setInitialUser = (user: UserStore) => {
   return {

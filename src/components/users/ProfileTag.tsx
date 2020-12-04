@@ -10,7 +10,7 @@ import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import { RootStore } from '../../store'
 import { updateState } from '../../store/user/actions'
-import { APIresponce, clientAxios, userUpdateTags } from '../../utils/axios';
+import { APIresponce, clientAxios, userUpdateTags, tagsSearch } from '../../utils/axios';
 import { ProfileEdit, ChipData } from '../../utils/types'
 import { ErrorUi, BackdropUi } from '../../store/ui/actions'
 import { throttle } from "lodash";
@@ -97,19 +97,18 @@ const ProfileTag: React.FC<Props> = ({ title, editable, itemName, setEdit }) => 
   }
 
   const searchTags = useCallback(throttle(async (keyword) => {
-    const { token } = user
-    const res = await clientAxios.post(
-      `/${itemName}/search`,
-      { keyword: keyword },
-      { headers: { 'Authorization': 'Bearer ' + token }, withCredentials: true }
-    )
+    // const { token } = user
+    const res = await tagsSearch(keyword, itemName)
+    if (res.status === 401) {
+      console.error(res.message)
+      return
+    }
     if (res.status !== 200) {
       dispatch(ErrorUi(res.data.error))
       return
     }
-    console.log(res.data)
     setSearchData(res.data)
-  }, 3000), [user.token])
+  }, 3000), [])
 
   const updateSubmit = async () => {
     dispatch(BackdropUi(true))

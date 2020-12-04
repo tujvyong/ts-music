@@ -1,6 +1,6 @@
 import axios from 'axios'
 import firebase from "../firebase/Firebase";
-import { ChipData } from './types'
+import { ChipData, PortfolioState } from './types'
 
 export interface APIresponce {
   status: number
@@ -80,6 +80,41 @@ export const userUpdateTags = async (tags: ChipData[], itemName: "genrus" | "ins
   )
   if (resp.status !== 204) {
     console.error(resp.data.error)
+    return { status: resp.status, error: resp.data.error }
+  }
+  return { status: resp.status }
+}
+
+export const tagsSearch = async (keyword: string, itemName: "genrus" | "instruments") => {
+  let token = await APIauthrization()
+  if (!token) return { status: 401, message: "You must logged in" }
+
+  let url = ''
+  if (itemName === "genrus") {
+    url = "/genrus/search"
+  } else if (itemName === "instruments") {
+    url = "/instruments/search"
+  }
+  const resp = await clientAxios.post(
+    url,
+    { keyword: keyword },
+    { headers: { 'Authorization': 'Bearer ' + token }, withCredentials: true }
+  )
+  if (resp.status !== 200) {
+    return { status: resp.status, error: resp.data.error }
+  }
+  return { status: resp.status, data: resp.data }
+}
+
+export const userUpdatePortfolios = async (portfolio: PortfolioState) => {
+  let token = await APIauthrization()
+  if (!token) return { status: 401, message: "You must logged in" }
+
+  const resp = await clientAxios.post("/me/portfolios",
+    portfolio,
+    { headers: { 'Authorization': 'Bearer ' + token }, withCredentials: true }
+  )
+  if (resp.status !== 204) {
     return { status: resp.status, error: resp.data.error }
   }
   return { status: resp.status }

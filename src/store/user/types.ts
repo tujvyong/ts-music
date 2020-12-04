@@ -9,8 +9,6 @@ export const UPDATE_BASIC = 'UPDATE_BASIC'
 export const UPDATE_STATE = 'UPDATE_STATE'
 
 export interface UserStore {
-  firebaseUser: firebase.User | null
-  token: string | null
   uid: string | null
   username: string
   bio: string
@@ -35,15 +33,15 @@ export interface UpdateUser {
   item: string
 }
 
-interface FirebaseUser {
-  type: typeof FIREBASE_USER,
-  payload: firebase.User
-}
+// interface FirebaseUser {
+//   type: typeof FIREBASE_USER,
+//   payload: firebase.User
+// }
 
-interface FirebaseToken {
-  type: typeof FIREBASE_TOKEN,
-  payload: string
-}
+// interface FirebaseToken {
+//   type: typeof FIREBASE_TOKEN,
+//   payload: string
+// }
 
 interface SetInitState {
   type: typeof INIT_STATE
@@ -60,4 +58,4 @@ interface UpdateState {
   payload: UpdateUser
 }
 
-export type UserActionTypes = FirebaseUser | FirebaseToken | SetInitState | UpdateBasic | UpdateState
+export type UserActionTypes = SetInitState | UpdateBasic | UpdateState
