@@ -8,6 +8,8 @@ import Auth from "./pages/Auth";
 import Front from "./pages/Front";
 import Profile from "./pages/Profile";
 import BackDrop from './components/Backdrop';
+import Post from './pages/Post';
+import PostEdit from './pages/PostEdit';
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
         <ErrorHandling>
           <Layout>
             <Switch>
+              <PrivateRoute path="/posts/:id/edit" component={PostEdit} />
+              <Route path="/posts/:id" component={Post} />
               <PrivateRoute path="/profile" component={Profile} />
               <Route path="/auth" component={Auth} />
               <Route path="/" component={Front} />

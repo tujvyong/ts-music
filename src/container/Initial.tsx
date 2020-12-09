@@ -27,7 +27,7 @@ const Initial: React.FC<Props> = ({ children }) => {
       console.log(err)
     })
     if (authed) {
-      dispatch(setInitialUser(authed.data.data))
+      dispatch(setInitialUser(authed.data))
       setIsLoaded(true)
     }
   }
